@@ -1,0 +1,30 @@
+config:
+  target: 'http://localhost:3045/graphql/'
+  phases:
+    - duration: 60
+      arrivalRate: 5
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+    - duration: 600
+      arrivalRate: 50
+scenarios:
+  - name: Get users
+    flow:
+      - post:
+          url: /
+          json:
+            query: ' mutation CreatePost($user: String!, $channel: String!, $text: String!, $pushtoken: String, $phone: String, $whatsapp: Boolean, $call: Boolean, $facebook: String, $google: String, $latitude: Float, $longitude: Float, $city: String, $avatar: String) { createPost(user: $user, channel: $channel, text: $text, pushtoken: $pushtoken, phone: $phone, whatsapp: $whatsapp, call: $call, facebook: $facebook, google: $google, latitude: $latitude, longitude: $longitude, city: $city, avatar: $avatar) { id user channel text likes premium pushtoken phone whatsapp call facebook google latitude longitude city avatar done extra3 createdAt __typename }}'
+            variables:
+              text: Dit is een test
+              user: Test
+              channel: Algemeen
+              pushtoken: 7116bfde-ae01-46a4-b36b-337fb4258d6b
+      - think: 3
+      - post:
+          url: /
+          json:
+            query: ' query me($pushtoken: String!) { me(pushtoken: $pushtoken) { id money bullets rank donator house weapon protection nextCar nextCrime } }'
+            variables:
+              pushtoken: ksjfklsdjflsdjlfkjsdlfjsldkfjlkfjsldfjdlskjf
+      - log: did the me-query
