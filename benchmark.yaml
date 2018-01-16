@@ -1,30 +1,98 @@
 config:
-  target: 'http://localhost:3045/graphql/'
+  variables:
+    firstName:
+      - Wijnand
+      - Arnoud
+      - Maurik
+      - Ernst
+      - Bert
+      - Renate
+      - Ineke
+      - Annechien
+      - Mans
+    lastName:
+      - Karsens
+      - Heijns
+    createMessage: >-
+      mutation CreateMessage($userId: Int!, $text: String!) {
+      createMessage(userid: $userId, text: $text) { 
+        id 
+        userId 
+        user {
+          firstName 
+          lastName 
+        } 
+        text 
+        createdAt 
+        }
+      }
+    createUser: |-
+      mutation CreateUser($firstName: String!, $lastName: String!) {
+        createUser(firstName: $firstName, lastName: $lastName) { 
+          firstName
+          lastName 
+          }
+        }
+    messages: |-
+      {
+        messages(userId:1){
+          userId
+          text
+          user {
+            firstName
+            lastName
+            fullName
+            secret
+          }
+        }
+      } 
+  target: 'http://172.104.228.7/artillery/'
   phases:
+    - duration: 30
+      arrivalRate: 0
+      rampTo: 10
+      name: 'PHASE 1: 0-10 for 30 seconds'
     - duration: 60
-      arrivalRate: 5
+      arrivalRate: 10
+      rampTo: 20
+      name: 'PHASE 2: 10-20 for 1 minute'
     - duration: 120
-      arrivalRate: 5
-      rampTo: 50
-    - duration: 600
-      arrivalRate: 50
+      arrivalRate: 20
+      name: 'FINAL PHASE: 20 for 2 minutes'
 scenarios:
-  - name: Get users
+  - name: >-
+      Add user, post a message sometimes, and regularly check userlist and
+      messages
     flow:
       - post:
           url: /
           json:
-            query: ' mutation CreatePost($user: String!, $channel: String!, $text: String!, $pushtoken: String, $phone: String, $whatsapp: Boolean, $call: Boolean, $facebook: String, $google: String, $latitude: Float, $longitude: Float, $city: String, $avatar: String) { createPost(user: $user, channel: $channel, text: $text, pushtoken: $pushtoken, phone: $phone, whatsapp: $whatsapp, call: $call, facebook: $facebook, google: $google, latitude: $latitude, longitude: $longitude, city: $city, avatar: $avatar) { id user channel text likes premium pushtoken phone whatsapp call facebook google latitude longitude city avatar done extra3 createdAt __typename }}'
+            query:
+              '[object Object]': null
             variables:
-              text: Dit is een test
-              user: Test
-              channel: Algemeen
-              pushtoken: 7116bfde-ae01-46a4-b36b-337fb4258d6b
-      - think: 3
+              firstName:
+                '[object Object]': null
+              lastName:
+                '[object Object]': null
+      - think: 1
       - post:
           url: /
           json:
-            query: ' query me($pushtoken: String!) { me(pushtoken: $pushtoken) { id money bullets rank donator house weapon protection nextCar nextCrime } }'
+            query:
+              '[object Object]': null
+      - think: 1
+      - post:
+          url: /
+          json:
+            query:
+              '[object Object]': null
             variables:
-              pushtoken: ksjfklsdjflsdjlfkjsdlfjsldkfjlkfjsldfjdlskjf
-      - log: did the me-query
+              text: Dit is een test
+              userId: 1
+      - think: 1
+      - post:
+          url: /
+          json:
+            query:
+              '[object Object]': null
+      - think: 1
