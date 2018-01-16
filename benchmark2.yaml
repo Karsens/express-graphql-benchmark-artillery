@@ -1,4 +1,17 @@
 config:
+  target: 'http://172.104.228.7:3000/graphql/'
+  phases:
+    - duration: 30
+      arrivalRate: 0
+      rampTo: 10
+      name: 'PHASE 1: 0-10 for 30 seconds'
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 20
+      name: 'PHASE 2: 10-20 for 1 minute'
+    - duration: 120
+      arrivalRate: 20
+      name: 'FINAL PHASE: 20 for 2 minutes'
   variables: 
     firstName: 
       - "Wijnand"
@@ -33,7 +46,7 @@ config:
           lastName 
           }
         }
-    messages: |-
+    messages: >-
       {
         messages(userId:1){
           userId
@@ -46,41 +59,28 @@ config:
           }
         }
       } 
-  target: 'http://172.104.228.7/artillery/'
-  phases:
-    - duration: 30
-      arrivalRate: 0
-      rampTo: 10
-      name: 'PHASE 1: 0-10 for 30 seconds'
-    - duration: 60
-      arrivalRate: 10
-      rampTo: 20
-      name: 'PHASE 2: 10-20 for 1 minute'
-    - duration: 120
-      arrivalRate: 20
-      name: 'FINAL PHASE: 20 for 2 minutes'
 scenarios:
   - name: >-
       Add user, post a message sometimes, and regularly check userlist and
-      messages
+      messages...
     flow:
       - post:
           url: /
           json:
-            query: {{ createUser }}
+            query: '{{ createUser }}'
             variables:
-              firstName: {{ firstName }}
-              lastName: {{ lastName }}
+              firstName: '{{ firstName }}'
+              lastName: '{{ lastName }}'
       - think: 1
       - post:
           url: /
           json:
-            query: {{ messages }}
+            query: '{{ messages }}'
       - think: 1
       - post:
           url: /
           json:
-            query: {{ createMessage }}
+            query: '{{ createMessage }}'
             variables:
               text: Dit is een test
               userId: 1
@@ -88,5 +88,5 @@ scenarios:
       - post:
           url: /
           json:
-            query: {{ messages }}
+            query: '{{ messages }}'
       - think: 1
