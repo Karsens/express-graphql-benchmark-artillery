@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "nodemon --exec babel-node --presets=env lib",
     "build": "babel lib -d dist --presets=env",
-    "serve": "pm2 start dist/index.js"
+    "serve": "NODE_ENV=production pm2 start dist/index.js"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
