@@ -64,29 +64,31 @@ scenarios:
       Add user, post a message sometimes, and regularly check userlist and
       messages...
     flow:
-      - post:
-          url: /
-          json:
-            query: '{{ createUser }}'
-            variables:
-              firstName: '{{ firstName }}'
-              lastName: '{{ lastName }}'
-      - think: 1
-      - post:
-          url: /
-          json:
-            query: '{{ messages }}'
-      - think: 1
-      - post:
-          url: /
-          json:
-            query: '{{ createMessage }}'
-            variables:
-              text: Dit is een test
-              userId: 1
-      - think: 1
-      - post:
-          url: /
-          json:
-            query: '{{ messages }}'
-      - think: 1
+      - loop: 
+        - post:
+            url: /
+            json:
+              query: '{{ createUser }}'
+              variables:
+                firstName: '{{ firstName }}'
+                lastName: '{{ lastName }}'
+        - think: 1
+        - post:
+            url: /
+            json:
+              query: '{{ messages }}'
+        - think: 1
+        - post:
+            url: /
+            json:
+              query: '{{ createMessage }}'
+              variables:
+                text: Dit is een test
+                userId: 1
+        - think: 1
+        - post:
+            url: /
+            json:
+              query: '{{ messages }}'
+        - think: 1
+      - count: 25
