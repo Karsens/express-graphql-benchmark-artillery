@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon --exec babel-node --presets=env lib",
+    "dev": "nodemon --exec babel-node --presets=env --trace-sync-io lib",
+    "devProduction": "NODE_ENV=production nodemon --exec babel-node --presets=env --trace-sync-io lib",
     "build": "babel lib -d dist --presets=env",
     "serve": "NODE_ENV=production pm2 start dist/index.js"
   },
