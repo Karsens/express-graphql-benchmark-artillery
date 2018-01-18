@@ -1,5 +1,5 @@
 config:
-  target: 'http://172.104.228.7:3000/graphql/'
+  target: 'http://localhost:3000/graphql/'
   phases:
     - duration: 10
       arrivalRate: 0
@@ -15,53 +15,55 @@ config:
     - duration: 120
       arrivalRate: 0
       name: 'COOLDOWN: 0 for 2 minutes'
-  variables: 
-    randomText: 
-      - "hey"
-      - "hoi"
-      - "Whasup"
-      - "naks"
-      - "jo"
-      - "lo"
-      - "hoi"
-      - "ps"
-      - "daahhhhagg"
-    firstName: 
-      - "Wijnand"
-      - "Arnoud"
-      - "Maurik"
-      - "Ernst"
-      - "Bert"
-      - "Renate"
-      - "Ineke"
-      - "Annechien"
-      - "Mans"
+  variables:
+    raw: 'false'
+    randomText:
+      - hey
+      - hoi
+      - Whasup
+      - naks
+      - jo
+      - lo
+      - hoi
+      - ps
+      - daahhhhagg
+    firstName:
+      - Wijnand
+      - Arnoud
+      - Maurik
+      - Ernst
+      - Bert
+      - Renate
+      - Ineke
+      - Annechien
+      - Mans
     lastName:
-      - "Karsens"
-      - "Heijns"
-    createMessage: >-
-              mutation CreateMessage($userId: Int!, $text: String!) {
-                createMessage(userId: $userId, text: $text) { 
-                  id 
-                  userId 
-                  user {
-                    firstName 
-                    lastName 
-                  } 
-                  text 
-                  createdAt 
-                }
-              }
+      - Karsens
+      - Heijns
+    createMessage: |-
+      mutation CreateMessage($raw: Boolean, $userId: Int!, $text: String!) {
+        createMessage(raw: $raw, userId: $userId, text: $text) { 
+          id 
+          userId 
+          user {
+            firstName 
+            lastName 
+          } 
+          text 
+          createdAt 
+        }
+      }
     createUser: >-
-      mutation CreateUser($firstName: String!, $lastName: String!) {
-        createUser(firstName: $firstName, lastName: $lastName) { 
+      mutation CreateUser($raw: Boolean, $firstName: String!, $lastName:
+      String!) {
+        createUser(raw: $raw, firstName: $firstName, lastName: $lastName) { 
           firstName
           lastName 
           }
         }
-    messages: >-
+    messages: |-
       {
-        messages(userId:1){
+        messages(raw: '{{ raw }}', userId:1){
           userId
           text
           user {
@@ -77,31 +79,33 @@ scenarios:
       Add user, post a message sometimes, and regularly check userlist and
       messages...
     flow:
-      - loop: 
-        - post:
-            url: /
-            json:
-              query: '{{ createUser }}'
-              variables:
-                firstName: '{{ firstName }}'
-                lastName: '{{ lastName }}'
-        - think: 1
-        - post:
-            url: /
-            json:
-              query: '{{ messages }}'
-        - think: 1
-        - post:
-            url: /
-            json:
-              query: '{{ createMessage }}'
-              variables:
-                text: '{{ randomText }}'
-                userId: 1
-        - think: 1
-        - post:
-            url: /
-            json:
-              query: '{{ messages }}'
-        - think: 1
+      - loop:
+          - post:
+              url: /
+              json:
+                query: '{{ createUser }}'
+                variables:
+                  firstName: '{{ firstName }}'
+                  lastName: '{{ lastName }}'
+                  raw: '{{ raw }}'
+          - think: 1
+          - post:
+              url: /
+              json:
+                query: '{{ messages }}'
+          - think: 1
+          - post:
+              url: /
+              json:
+                query: '{{ createMessage }}'
+                variables:
+                  text: '{{ randomText }}'
+                  userId: 1
+                  raw: '{{ raw }}'
+          - think: 1
+          - post:
+              url: /
+              json:
+                query: '{{ messages }}'
+          - think: 1
       - count: 50
