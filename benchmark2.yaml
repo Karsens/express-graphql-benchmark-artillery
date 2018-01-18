@@ -1,5 +1,5 @@
 config:
-  target: 'http://localhost:3000/graphql/'
+  target: 'http://172.104.228.7:3000/graphql/'
   phases:
     - duration: 10
       arrivalRate: 0
@@ -16,7 +16,7 @@ config:
       arrivalRate: 0
       name: 'COOLDOWN: 0 for 2 minutes'
   variables:
-    raw: 'false'
+    raw: false
     randomText:
       - hey
       - hoi
