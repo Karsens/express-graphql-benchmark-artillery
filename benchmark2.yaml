@@ -1,5 +1,5 @@
 config:
-  target: 'http://172.104.228.7:3000/graphql/'
+  target: 'http://localhost:3000/graphql/'
   phases:
     - duration: 10
       arrivalRate: 1
@@ -43,12 +43,7 @@ config:
         createMessage(raw: $raw, userId: $userId, text: $text) { 
           id 
           userId 
-          user {
-            firstName 
-            lastName 
-          } 
           text 
-          createdAt 
         }
       }
     createUser: >-
@@ -64,12 +59,6 @@ config:
         messages(raw: '{{ raw }}', userId:1){
           userId
           text
-          user {
-            firstName
-            lastName
-            fullName
-            secret
-          }
         }
       } 
 scenarios:
