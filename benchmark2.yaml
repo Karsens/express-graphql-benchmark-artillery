@@ -2,21 +2,19 @@ config:
   target: 'http://172.104.228.7:3000/graphql/'
   phases:
     - duration: 10
-      arrivalRate: 0
-      rampTo: 10
-      name: 'WARMUP 1: 0-10 for 10 seconds'
-    - duration: 20
+      arrivalRate: 1
+      name: 'WARMUP 1: 1 for 10 seconds = 10'
+    - duration: 18
+      arrivalRate: 5
+      name: 'WARMUP 2: 5 for 18 seconds = 90'
+    - duration: 90
       arrivalRate: 10
-      rampTo: 20
-      name: 'WARMUP 2: 10-20 for 20 seconds'
-    - duration: 120
-      arrivalRate: 20
-      name: 'TOP: 20 for 2 minutes'
+      name: 'TOP: 10 * 90 seconds = 900'
     - duration: 120
       arrivalRate: 0
-      name: 'COOLDOWN: 0 for 2 minutes'
+      name: 'COOLDOWN: 0 for 2 minutes = 0'
   variables:
-    raw: false
+    raw: true
     randomText:
       - hey
       - hoi
@@ -108,4 +106,4 @@ scenarios:
               json:
                 query: '{{ messages }}'
           - think: 1
-      - count: 50
+      - count: 25
