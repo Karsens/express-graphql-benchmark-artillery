@@ -14,7 +14,7 @@ config:
       arrivalRate: 0
       name: 'COOLDOWN: 0 for 2 minutes = 0'
   variables:
-    raw: false
+    raw: true
     randomText:
       - hey
       - hoi
